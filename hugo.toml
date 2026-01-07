@@ -1,0 +1,86 @@
+baseURL = "https://mov.blog"
+languageCode = "en-us"
+title = "Mov."
+
+[pagination]
+  pagerSize = 6
+
+# Content settings
+[params]
+  blogName = "Mov."
+  blogDescription = "A minimalist space for thoughts on design, code, and simplicity."
+  author = "Mono Team"
+
+# Menu
+[menus]
+  [[menus.main]]
+    name = "Work"
+    url = "/"
+    weight = 1
+  [[menus.main]]
+    name = "About"
+    url = "/about/"
+    weight = 2
+  [[menus.main]]
+    name = "Blog"
+    url = "/posts/"
+    weight = 3
+  [[menus.main]]
+    name = "Contact"
+    url = "/contact/"
+    weight = 4
+
+# Markdown rendering
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      footnote = true
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    anchorLineNos = false
+    codeFences = true
+    guessSyntax = true
+    hl_Lines = ""
+    lineAnchors = ""
+    lineNoStart = 1
+    lineNos = false
+    lineNumbersInTable = true
+    noClasses = true
+    style = "monokai"
+    tabWidth = 4
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false
+
+# Taxonomies
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+# Output formats
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML"]
+  term = ["HTML"]
+
+[outputFormats.JSON]
+  mediaType = "application/json"
+  baseName = "search"
+  isPlainText = true
+
+# Build settings
+[build]
+  writeStats = true
+
+# Minify
+[minify]
+  disableCSS = false
+  disableHTML = false
+  disableJS = false
+  disableJSON = false
+  disableSVG = false
+  disableXML = false
+  minifyOutput = true

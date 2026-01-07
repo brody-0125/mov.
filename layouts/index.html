@@ -1,0 +1,78 @@
+{{ define "main" }}
+<div class="pt-24 pb-20">
+  <!-- Hero Section -->
+  <section class="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
+    <div class="max-w-3xl">
+      <h1 class="text-4xl sm:text-5xl md:text-7xl font-serif font-medium text-black leading-[1.1] mb-6">
+        Minimalist<br/>
+        <span class="text-gray-400 italic">Perspectives.</span>
+      </h1>
+      <p class="text-lg md:text-xl text-gray-600 max-w-xl font-light leading-relaxed">
+        {{ .Site.Params.blogDescription }}
+      </p>
+    </div>
+  </section>
+
+  <!-- Filter / Tabs -->
+  <section class="max-w-7xl mx-auto px-4 md:px-6 mb-10 border-b border-gray-100">
+    <div class="flex gap-8 overflow-x-auto pb-4 no-scrollbar touch-pan-x">
+      <a
+        href="/"
+        class="text-sm tracking-wide whitespace-nowrap transition-colors text-black font-medium border-b-2 border-black -mb-[17px] pb-4"
+      >
+        All
+      </a>
+      {{ range .Site.Taxonomies.categories }}
+      <a
+        href="{{ .Page.Permalink }}"
+        class="text-sm tracking-wide whitespace-nowrap transition-colors text-gray-400 hover:text-black pb-4"
+      >
+        {{ .Page.Title }}
+      </a>
+      {{ end }}
+    </div>
+  </section>
+
+  <!-- Grid -->
+  <section class="max-w-7xl mx-auto px-4 md:px-6">
+    <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+      {{/* Get all posts, featured first */}}
+      {{ $posts := where .Site.RegularPages "Section" "posts" }}
+      {{ $featured := where $posts ".Params.featured" true }}
+      {{ $regular := where $posts ".Params.featured" "!=" true }}
+      {{ $postsPerPage := 6 }}
+
+      {{/* Featured Post */}}
+      {{ range first 1 $featured }}
+      <div class="post-item col-span-1 md:col-span-2 lg:col-span-2">
+        {{ partial "post-card.html" . }}
+      </div>
+      {{ end }}
+
+      {{/* Regular Posts - show first batch */}}
+      {{ range $index, $post := $regular }}
+      <div class="post-item{{ if ge $index (sub $postsPerPage 1) }} hidden{{ end }}">
+        {{ partial "post-card.html" $post }}
+      </div>
+      {{ end }}
+
+      {{/* If no featured, show all as regular */}}
+      {{ if not $featured }}
+      {{ range $index, $post := $posts }}
+      <div class="post-item{{ if ge $index $postsPerPage }} hidden{{ end }}">
+        {{ partial "post-card.html" $post }}
+      </div>
+      {{ end }}
+      {{ end }}
+    </div>
+    <div id="posts-total" data-total="{{ len $regular }}" data-per-page="{{ $postsPerPage }}" class="hidden"></div>
+
+    <!-- Load More -->
+    <div id="load-more-container" class="mt-20 text-center hidden">
+      <button id="load-more-btn" class="inline-block border border-gray-200 text-gray-900 px-8 py-3 rounded-full text-sm font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
+        Load More Posts
+      </button>
+    </div>
+  </section>
+</div>
+{{ end }}

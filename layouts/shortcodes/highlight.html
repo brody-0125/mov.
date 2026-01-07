@@ -1,0 +1,10 @@
+{{- $color := .Get "color" | default "yellow" -}}
+{{- $colors := dict
+  "yellow" "bg-amber-50 text-amber-800 decoration-amber-200"
+  "green" "bg-emerald-50 text-emerald-800 decoration-emerald-200"
+  "blue" "bg-sky-50 text-sky-800 decoration-sky-200"
+  "red" "bg-rose-50 text-rose-800 decoration-rose-200"
+  "purple" "bg-violet-50 text-violet-800 decoration-violet-200"
+  "gray" "bg-stone-100 text-stone-700 decoration-stone-200"
+-}}
+<mark class="px-1 py-0.5 rounded {{ index $colors $color }} decoration-2 underline-offset-2">{{ .Inner | markdownify }}</mark>

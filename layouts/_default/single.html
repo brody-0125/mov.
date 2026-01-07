@@ -1,0 +1,125 @@
+{{ define "main" }}
+{{ if eq .Section "posts" }}
+{{/* Blog Post Layout */}}
+{{- $author := false -}}
+{{- with .Params.author -}}
+  {{- $author = index $.Site.Data.authors . -}}
+{{- end -}}
+
+<article class="pt-32 pb-20 min-h-screen animate-fade-in">
+  <!-- Header Section -->
+  <div class="max-w-3xl mx-auto px-4 md:px-6 mb-12 text-center">
+    <a
+      href="/posts/"
+      class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-8"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m12 19-7-7 7-7"></path>
+        <path d="M19 12H5"></path>
+      </svg>
+      Back to posts
+    </a>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-6">
+      {{ with .Params.category }}
+      <span class="uppercase tracking-widest font-medium text-black">{{ . }}</span>
+      <span class="hidden sm:inline w-px h-4 bg-gray-300"></span>
+      {{ end }}
+      <span class="flex items-center gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+          <line x1="16" x2="16" y1="2" y2="6"></line>
+          <line x1="8" x2="8" y1="2" y2="6"></line>
+          <line x1="3" x2="21" y1="10" y2="10"></line>
+        </svg>
+        {{ .Date.Format "Jan 02, 2006" }}
+      </span>
+      {{ with .Params.readTime }}
+      <span class="hidden sm:inline w-px h-4 bg-gray-300"></span>
+      <span class="flex items-center gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        {{ . }}
+      </span>
+      {{ end }}
+    </div>
+
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-gray-900 leading-tight mb-8">
+      {{ .Title }}
+    </h1>
+
+    {{ with $author }}
+    <div class="flex items-center justify-center gap-3">
+      <img src="{{ .avatar }}" alt="{{ .name }}" class="w-10 h-10 rounded-full border border-gray-100" loading="lazy" />
+      <div class="text-left">
+        <p class="text-sm font-medium text-gray-900">{{ .name }}</p>
+        <p class="text-xs text-gray-500">{{ .role }}</p>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+
+  <!-- Featured Image -->
+  {{ with .Params.coverImage }}
+  <div class="max-w-5xl mx-auto px-4 md:px-6 mb-16">
+    <div class="rounded-2xl overflow-hidden aspect-video shadow-sm">
+      <img src="{{ . }}" alt="{{ $.Title }}" class="w-full h-full object-cover" loading="lazy" />
+    </div>
+  </div>
+  {{ end }}
+
+  <!-- Content with TOC -->
+  <div class="max-w-7xl mx-auto px-4 md:px-6 flex gap-12 justify-center">
+    <!-- Main Content -->
+    <div class="max-w-2xl w-full">
+      <div class="prose prose-lg prose-gray prose-headings:font-serif prose-headings:font-medium prose-a:text-black prose-a:no-underline prose-a:border-b prose-a:border-gray-300 hover:prose-a:border-black prose-img:rounded-xl">
+        {{ .Content }}
+      </div>
+
+      <!-- Tags -->
+      {{ with .Params.tags }}
+      <div class="mt-16 pt-8 border-t border-gray-100">
+        <div class="flex flex-wrap gap-3">
+          {{ range . }}
+          <a href="{{ "/tags/" | relURL }}{{ . | urlize }}/" class="inline-flex items-center gap-1 px-3 py-1 bg-gray-50 text-gray-600 text-sm rounded-full hover:bg-gray-100 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"></path>
+              <path d="M7 7h.01"></path>
+            </svg>
+            {{ . }}
+          </a>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+    </div>
+
+    <!-- TOC Sidebar -->
+    {{ if .TableOfContents }}
+    <div class="hidden xl:block w-64 shrink-0 self-start sticky top-24">
+      <h4 class="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">On this page</h4>
+      <nav id="toc-nav" class="toc">
+        {{ .TableOfContents }}
+      </nav>
+    </div>
+    {{ end }}
+  </div>
+</article>
+
+{{ else }}
+{{/* Generic Page Layout (About, Contact, etc.) */}}
+<article class="pt-32 pb-20 min-h-screen animate-fade-in">
+  <div class="max-w-3xl mx-auto px-4 md:px-6">
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-gray-900 leading-tight mb-12 text-center">
+      {{ .Title }}
+    </h1>
+
+    <div class="prose prose-lg prose-gray prose-headings:font-serif prose-headings:font-medium prose-a:text-black prose-a:no-underline prose-a:border-b prose-a:border-gray-300 hover:prose-a:border-black max-w-none">
+      {{ .Content }}
+    </div>
+  </div>
+</article>
+{{ end }}
+{{ end }}

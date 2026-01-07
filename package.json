@@ -1,0 +1,17 @@
+{
+  "name": "minimalist-blog-template",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "hugo server --buildDrafts --buildFuture",
+    "build": "hugo --minify",
+    "css:dev": "npx tailwindcss -i ./assets/css/main.css -o ./static/css/main.css --watch",
+    "css:build": "npx tailwindcss -i ./assets/css/main.css -o ./static/css/main.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32"
+  }
+}

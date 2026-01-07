@@ -1,0 +1,83 @@
+{{- $cardStyle := .Params.cardStyle | default "standard" -}}
+{{- $author := false -}}
+{{- with .Params.author -}}
+  {{- $author = index $.Site.Data.authors . -}}
+{{- end -}}
+
+{{ if eq $cardStyle "overlay" }}
+<!-- Featured Post Card -->
+<a href="{{ .Permalink }}" class="group block h-full relative overflow-hidden rounded-2xl bg-gray-100 aspect-[4/3] md:aspect-auto md:min-h-[400px]">
+  <img
+    src="{{ .Params.coverImage }}"
+    alt="{{ .Title }}"
+    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+    loading="lazy"
+  />
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 md:p-8 flex flex-col justify-end">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] md:text-xs font-semibold tracking-wide uppercase rounded-full border border-white/20">
+        {{ with .Params.categories }}{{ index . 0 }}{{ end }}
+      </span>
+      <span class="text-gray-300 text-xs">{{ .Params.readTime }}</span>
+    </div>
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-serif text-white font-medium mb-3 leading-tight group-hover:underline decoration-1 underline-offset-4">
+      {{ .Title }}
+    </h2>
+    <p class="text-gray-300 line-clamp-2 max-w-xl text-sm md:text-base hidden sm:block">
+      {{ .Params.excerpt }}
+    </p>
+  </div>
+</a>
+{{ else }}
+<!-- Regular Post Card -->
+<a href="{{ .Permalink }}" class="group flex flex-col h-full">
+  <div class="relative overflow-hidden rounded-xl bg-gray-100 mb-5 aspect-[3/2]">
+    <img
+      src="{{ .Params.coverImage }}"
+      alt="{{ .Title }}"
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+    />
+    <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white p-2 rounded-full shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+        <path d="M7 7h10v10"></path>
+        <path d="M7 17 17 7"></path>
+      </svg>
+    </div>
+    <div class="absolute top-4 left-4 md:hidden">
+      <span class="px-2 py-1 bg-white/90 backdrop-blur-sm text-black text-[10px] font-bold tracking-wider uppercase rounded-md shadow-sm">
+        {{ with .Params.categories }}{{ index . 0 }}{{ end }}
+      </span>
+    </div>
+  </div>
+
+  <div class="flex-1 flex flex-col">
+    <!-- Desktop Category Display -->
+    <div class="hidden md:flex items-center gap-3 mb-3 text-xs text-gray-500">
+      <span class="font-bold text-black uppercase tracking-wider text-[11px] border-b-2 border-transparent group-hover:border-black transition-colors pb-0.5">
+        {{ with .Params.categories }}{{ index . 0 }}{{ end }}
+      </span>
+      <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+      <span>{{ .Date.Format "Jan 02, 2006" }}</span>
+    </div>
+
+    <h3 class="text-lg md:text-xl font-serif font-medium text-gray-900 mb-2 leading-snug group-hover:text-gray-600 transition-colors">
+      {{ .Title }}
+    </h3>
+
+    <p class="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+      {{ .Params.excerpt }}
+    </p>
+
+    <div class="flex flex-wrap gap-2 mt-auto">
+      {{ with .Params.tags }}
+      {{ range first 2 . }}
+      <span class="text-[10px] text-gray-500 bg-gray-100 px-2 py-1 rounded-md">
+        #{{ . }}
+      </span>
+      {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</a>
+{{ end }}
