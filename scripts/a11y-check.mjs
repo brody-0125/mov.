@@ -3,18 +3,11 @@
  * Static HTML accessibility check with axe-core + jsdom (no browser driver).
  */
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { JSDOM } from 'jsdom';
+import axe from 'axe-core';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const axeSource = readFileSync(
-  join(__dirname, '../node_modules/axe-core/axe.min.js'),
-  'utf8'
-);
-
-const root = process.cwd();
-const publicDir = join(root, 'public');
+const publicDir = join(process.cwd(), 'public');
 
 const candidates = [
   'index.html',
@@ -28,9 +21,9 @@ const pages = candidates
   .filter(entry => existsSync(entry.file));
 
 if (existsSync(join(publicDir, 'posts'))) {
-  const postHtml = readdirSync(join(publicDir, 'posts')).find(
-    name => name.endsWith('.html') && name !== 'index.html'
-  );
+  const postHtml = readdirSync(join(publicDir, 'posts'))
+    .filter(name => name.endsWith('.html') && name !== 'index.html')
+    .sort()[0];
   if (postHtml) {
     pages.push({ rel: `posts/${postHtml}`, file: join(publicDir, 'posts', postHtml) });
   }
@@ -49,10 +42,7 @@ for (const { rel, file } of pages) {
     url: `https://example.com/${rel}`
   });
 
-  const { window } = dom;
-  window.eval(axeSource);
-
-  const results = await window.axe.run(window.document.documentElement, {
+  const results = await axe.run(dom.window.document.documentElement, {
     runOnly: {
       type: 'tag',
       values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']

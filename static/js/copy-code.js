@@ -1,16 +1,7 @@
 // Code block copy functionality
 document.addEventListener('DOMContentLoaded', function() {
   const codeBlocks = document.querySelectorAll('.highlight');
-
-  function announce(message) {
-    const region = document.getElementById('a11y-status');
-    if (region && message) {
-      region.textContent = '';
-      window.setTimeout(() => {
-        region.textContent = message;
-      }, 50);
-    }
-  }
+  const announce = (message) => window.siteA11y?.announce(message);
 
   const copyIcon = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">

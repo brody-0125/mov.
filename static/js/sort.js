@@ -8,16 +8,9 @@
 
   let currentFilter = 'all';
   let currentSort = 'newest';
+  let lastVisibleCount = -1;
 
-  function announce(message) {
-    const region = document.getElementById('a11y-status');
-    if (region && message) {
-      region.textContent = '';
-      window.setTimeout(() => {
-        region.textContent = message;
-      }, 50);
-    }
-  }
+  const announce = (message) => window.siteA11y?.announce(message);
 
   function setToggleState(buttons, activeBtn) {
     buttons.forEach(b => {
@@ -51,7 +44,11 @@
     });
 
     visiblePosts.forEach(post => grid.appendChild(post));
-    announce(`${visiblePosts.length} post${visiblePosts.length === 1 ? '' : 's'} shown`);
+
+    if (visiblePosts.length !== lastVisibleCount) {
+      lastVisibleCount = visiblePosts.length;
+      announce(`${visiblePosts.length} post${visiblePosts.length === 1 ? '' : 's'} shown`);
+    }
   }
 
   filterBtns.forEach(btn => {

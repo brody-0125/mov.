@@ -2,24 +2,12 @@
 (function() {
   let fuse = null;
   let searchIndex = null;
+  let indexLoadPromise = null;
 
-  function announce(message) {
-    const region = document.getElementById('a11y-status');
-    if (region && message) {
-      region.textContent = '';
-      window.setTimeout(() => {
-        region.textContent = message;
-      }, 50);
-    }
-  }
+  const announce = (message) => window.siteA11y?.announce(message);
 
   function createSearchController(config) {
-    const {
-      input,
-      resultsContainer,
-      resultsList,
-      noResults
-    } = config;
+    const { input, resultsContainer, resultsList, noResults } = config;
 
     if (!input || !resultsContainer || !resultsList || !noResults) {
       return null;
@@ -79,6 +67,10 @@
       setExpanded(false);
       clearActiveOption();
       optionNodes = [];
+    }
+
+    function containsTarget(target) {
+      return input.contains(target) || resultsContainer.contains(target);
     }
 
     function performSearch(query) {
@@ -141,7 +133,7 @@
       }
     });
 
-    return { closeResults, performSearch };
+    return { closeResults, containsTarget };
   }
 
   const desktop = createSearchController({
@@ -158,39 +150,40 @@
     noResults: document.getElementById('mobile-search-no-results')
   });
 
-  async function loadSearchIndex() {
-    if (searchIndex) return;
-    try {
-      const response = await fetch('/search.json');
-      searchIndex = await response.json();
-      fuse = new Fuse(searchIndex, {
-        keys: [
-          { name: 'title', weight: 0.4 },
-          { name: 'excerpt', weight: 0.3 },
-          { name: 'content', weight: 0.2 },
-          { name: 'category', weight: 0.05 },
-          { name: 'tags', weight: 0.05 }
-        ],
-        threshold: 0.3,
-        includeMatches: true,
-        minMatchCharLength: 2
+  function loadSearchIndex() {
+    if (searchIndex) return Promise.resolve();
+    if (indexLoadPromise) return indexLoadPromise;
+
+    indexLoadPromise = fetch('/search.json')
+      .then(response => response.json())
+      .then(data => {
+        searchIndex = data;
+        fuse = new Fuse(searchIndex, {
+          keys: [
+            { name: 'title', weight: 0.4 },
+            { name: 'excerpt', weight: 0.3 },
+            { name: 'content', weight: 0.2 },
+            { name: 'category', weight: 0.05 },
+            { name: 'tags', weight: 0.05 }
+          ],
+          threshold: 0.3,
+          minMatchCharLength: 2
+        });
+      })
+      .catch(error => {
+        indexLoadPromise = null;
+        console.error('Failed to load search index:', error);
       });
-    } catch (error) {
-      console.error('Failed to load search index:', error);
-    }
+
+    return indexLoadPromise;
   }
 
   function handleClickOutside(e) {
-    const input = document.getElementById('search-input');
-    const resultsContainer = document.getElementById('search-results');
-    const mobileInput = document.getElementById('mobile-search-input');
-    const mobileResultsContainer = document.getElementById('mobile-search-results');
-
-    if (input && resultsContainer && !input.contains(e.target) && !resultsContainer.contains(e.target)) {
-      desktop?.closeResults();
+    if (desktop && !desktop.containsTarget(e.target)) {
+      desktop.closeResults();
     }
-    if (mobileInput && mobileResultsContainer && !mobileInput.contains(e.target) && !mobileResultsContainer.contains(e.target)) {
-      mobile?.closeResults();
+    if (mobile && !mobile.containsTarget(e.target)) {
+      mobile.closeResults();
     }
   }
 
