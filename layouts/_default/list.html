@@ -19,9 +19,9 @@
     <div class="flex flex-wrap gap-12">
       <!-- Category Filter -->
       <div class="flex flex-col gap-2">
-        <span class="text-sm font-medium text-gray-700 pb-1 border-b border-gray-700 self-start">Filter</span>
-        <div class="flex flex-wrap gap-2">
-          <button data-category="all" class="filter-btn px-3 py-1.5 rounded-full bg-gray-900 text-white text-xs font-medium transition-all">All</button>
+        <span id="filter-label" class="text-sm font-medium text-gray-700 pb-1 border-b border-gray-700 self-start">Filter</span>
+        <div class="flex flex-wrap gap-2" role="group" aria-labelledby="filter-label">
+          <button type="button" data-category="all" class="filter-btn min-h-[44px] min-w-[44px] px-4 py-2 rounded-full bg-gray-900 text-white text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2" aria-pressed="true">All</button>
           {{- $categories := slice }}
           {{- range .Pages }}
             {{- with .Params.categories }}
@@ -32,16 +32,16 @@
           {{- end }}
           {{- $categories = $categories | uniq | sort }}
           {{- range $categories }}
-          <button data-category="{{ . }}" class="filter-btn px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-medium transition-all">{{ . }}</button>
+          <button type="button" data-category="{{ . }}" class="filter-btn min-h-[44px] min-w-[44px] px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2" aria-pressed="false">{{ . }}</button>
           {{- end }}
         </div>
       </div>
       <!-- Sort -->
       <div class="flex flex-col gap-2">
-        <span class="text-sm font-medium text-gray-700 pb-1 border-b border-gray-700 self-start">Sort</span>
-        <div class="flex gap-2">
-          <button data-sort="newest" class="sort-btn px-3 py-1.5 rounded-full bg-gray-900 text-white text-xs font-medium transition-all">Newest</button>
-          <button data-sort="oldest" class="sort-btn px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-xs font-medium transition-all">Oldest</button>
+        <span id="sort-label" class="text-sm font-medium text-gray-700 pb-1 border-b border-gray-700 self-start">Sort</span>
+        <div class="flex gap-2" role="group" aria-labelledby="sort-label">
+          <button type="button" data-sort="newest" class="sort-btn min-h-[44px] min-w-[44px] px-4 py-2 rounded-full bg-gray-900 text-white text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2" aria-pressed="true">Newest</button>
+          <button type="button" data-sort="oldest" class="sort-btn min-h-[44px] min-w-[44px] px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2" aria-pressed="false">Oldest</button>
         </div>
       </div>
     </div>

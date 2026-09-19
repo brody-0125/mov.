@@ -236,6 +236,10 @@ npm run build
 
 Output will be in the `public/` directory.
 
+## Accessibility (WCAG 2.2)
+
+See `docs/accessibility/` for the roadmap, author guide, and `npm run a11y` (after `npm run css:build && npm run build`).
+
 ## License
 
 MIT License

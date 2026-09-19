@@ -27,9 +27,12 @@
   {{ end -}}
 </head>
 <body class="bg-white text-primary font-sans">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="a11y-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
   {{ partial "header.html" . }}
 
-  <main>
+  <main id="main-content" tabindex="-1">
     {{ block "main" . }}{{ end }}
   </main>
 
