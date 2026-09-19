@@ -8,38 +8,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let isMenuOpen = false;
 
-  // Mobile menu toggle
-  if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener('click', function() {
-      isMenuOpen = !isMenuOpen;
+  function setMenuOpen(open) {
+    isMenuOpen = open;
+    if (!menuToggle || !mobileMenu) return;
 
-      if (isMenuOpen) {
-        mobileMenu.classList.remove('max-h-0', 'opacity-0');
-        mobileMenu.classList.add('max-h-64', 'opacity-100');
-        menuIcon.classList.add('hidden');
-        closeIcon.classList.remove('hidden');
-      } else {
-        mobileMenu.classList.remove('max-h-64', 'opacity-100');
-        mobileMenu.classList.add('max-h-0', 'opacity-0');
-        menuIcon.classList.remove('hidden');
-        closeIcon.classList.add('hidden');
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+    if (open) {
+      mobileMenu.removeAttribute('hidden');
+      mobileMenu.classList.remove('max-h-0', 'opacity-0');
+      mobileMenu.classList.add('max-h-[28rem]', 'opacity-100');
+      menuIcon.classList.add('hidden');
+      closeIcon.classList.remove('hidden');
+      const firstLink = mobileMenu.querySelector('nav a, input');
+      firstLink?.focus();
+    } else {
+      mobileMenu.classList.remove('max-h-[28rem]', 'opacity-100');
+      mobileMenu.classList.add('max-h-0', 'opacity-0');
+      mobileMenu.setAttribute('hidden', '');
+      menuIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+    }
+  }
+
+  if (menuToggle && mobileMenu) {
+    mobileMenu.setAttribute('hidden', '');
+
+    menuToggle.addEventListener('click', function() {
+      setMenuOpen(!isMenuOpen);
+    });
+
+    menuToggle.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && isMenuOpen) {
+        e.preventDefault();
+        setMenuOpen(false);
+        menuToggle.focus();
       }
     });
 
-    // Close menu when clicking a link
-    mobileMenu.querySelectorAll('a').forEach(link => {
+    mobileMenu.querySelectorAll('nav a').forEach(link => {
       link.addEventListener('click', function() {
-        isMenuOpen = false;
-        mobileMenu.classList.remove('max-h-64', 'opacity-100');
-        mobileMenu.classList.add('max-h-0', 'opacity-0');
-        menuIcon.classList.remove('hidden');
-        closeIcon.classList.add('hidden');
+        setMenuOpen(false);
       });
     });
   }
 
-  // Scroll handling for header
   function handleScroll() {
+    if (!header) return;
     const currentScroll = window.scrollY;
 
     if (currentScroll > 20) {
@@ -56,7 +71,5 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   window.addEventListener('scroll', handleScroll, { passive: true });
-
-  // Initial check
   handleScroll();
 });

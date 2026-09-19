@@ -5,7 +5,7 @@
     <div class="max-w-3xl">
       <h1 class="text-4xl sm:text-5xl md:text-7xl font-serif font-medium text-black leading-[1.1] mb-6">
         Minimalist<br/>
-        <span class="text-gray-400 italic">Perspectives.</span>
+        <span class="text-gray-600 italic">Perspectives.</span>
       </h1>
       <p class="text-lg md:text-xl text-gray-600 max-w-xl font-light leading-relaxed">
         {{ .Site.Params.blogDescription }}
@@ -25,7 +25,7 @@
       {{ range .Site.Taxonomies.categories }}
       <a
         href="{{ .Page.Permalink }}"
-        class="text-sm tracking-wide whitespace-nowrap transition-colors text-gray-400 hover:text-black pb-4"
+        class="text-sm tracking-wide whitespace-nowrap transition-colors text-gray-600 hover:text-black pb-4 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 rounded-sm"
       >
         {{ .Page.Title }}
       </a>
@@ -69,7 +69,7 @@
 
     <!-- Load More -->
     <div id="load-more-container" class="mt-20 text-center hidden">
-      <button id="load-more-btn" class="inline-block border border-gray-200 text-gray-900 px-8 py-3 rounded-full text-sm font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
+      <button type="button" id="load-more-btn" class="inline-block border border-gray-200 text-gray-900 px-8 py-3 min-h-[44px] rounded-full text-sm font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
         Load More Posts
       </button>
     </div>

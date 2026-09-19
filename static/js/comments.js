@@ -1,37 +1,41 @@
-// Inline comment tooltip functionality
+// Inline comment tooltip — keyboard and screen reader friendly
 document.addEventListener('DOMContentLoaded', function() {
-  const commentTexts = document.querySelectorAll('.inline-comment-text');
+  const triggers = document.querySelectorAll('.inline-comment-trigger');
 
-  commentTexts.forEach(text => {
-    const wrapper = text.closest('.inline-comment-wrapper');
-    const tooltip = wrapper.querySelector('.inline-comment-tooltip');
+  function closeAll(except) {
+    triggers.forEach(trigger => {
+      const tooltipId = trigger.getAttribute('aria-controls');
+      const tooltip = tooltipId ? document.getElementById(tooltipId) : null;
+      if (tooltip && tooltip !== except) {
+        tooltip.classList.add('hidden');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 
+  triggers.forEach(trigger => {
+    const tooltipId = trigger.getAttribute('aria-controls');
+    const tooltip = tooltipId ? document.getElementById(tooltipId) : null;
     if (!tooltip) return;
 
-    // Show tooltip on hover
-    text.addEventListener('mouseenter', () => {
-      tooltip.classList.remove('hidden');
-    });
+    function setOpen(open) {
+      tooltip.classList.toggle('hidden', !open);
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
 
-    wrapper.addEventListener('mouseleave', () => {
-      tooltip.classList.add('hidden');
-    });
-
-    // Show tooltip on click for mobile
-    text.addEventListener('click', (e) => {
+    trigger.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Hide all other tooltips
-      document.querySelectorAll('.inline-comment-tooltip').forEach(t => {
-        if (t !== tooltip) t.classList.add('hidden');
-      });
-      tooltip.classList.toggle('hidden');
+      const willOpen = tooltip.classList.contains('hidden');
+      closeAll(willOpen ? tooltip : null);
+      setOpen(willOpen);
+    });
+
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+      }
     });
   });
 
-  // Hide tooltips when clicking outside
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.inline-comment-tooltip').forEach(t => {
-      t.classList.add('hidden');
-    });
-  });
+  document.addEventListener('click', () => closeAll(null));
 });

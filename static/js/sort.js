@@ -8,11 +8,24 @@
 
   let currentFilter = 'all';
   let currentSort = 'newest';
+  let lastVisibleCount = -1;
+
+  const announce = (message) => window.siteA11y?.announce(message);
+
+  function setToggleState(buttons, activeBtn) {
+    buttons.forEach(b => {
+      const isActive = b === activeBtn;
+      b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      b.classList.toggle('bg-gray-900', isActive);
+      b.classList.toggle('text-white', isActive);
+      b.classList.toggle('bg-gray-100', !isActive);
+      b.classList.toggle('text-gray-600', !isActive);
+    });
+  }
 
   function updatePosts() {
     const posts = Array.from(grid.querySelectorAll('.post-item'));
 
-    // Filter
     posts.forEach(post => {
       const category = post.dataset.category;
       if (currentFilter === 'all' || category === currentFilter) {
@@ -22,48 +35,36 @@
       }
     });
 
-    // Sort visible posts
     const visiblePosts = posts.filter(p => p.style.display !== 'none');
     visiblePosts.sort((a, b) => {
       if (currentSort === 'newest') {
         return b.dataset.date.localeCompare(a.dataset.date);
-      } else {
-        return a.dataset.date.localeCompare(b.dataset.date);
       }
+      return a.dataset.date.localeCompare(b.dataset.date);
     });
 
-    // Re-append sorted posts
     visiblePosts.forEach(post => grid.appendChild(post));
+
+    if (visiblePosts.length !== lastVisibleCount) {
+      lastVisibleCount = visiblePosts.length;
+      announce(`${visiblePosts.length} post${visiblePosts.length === 1 ? '' : 's'} shown`);
+    }
   }
 
-  // Filter click handlers
   filterBtns.forEach(btn => {
+    btn.setAttribute('aria-pressed', btn.dataset.category === 'all' ? 'true' : 'false');
     btn.addEventListener('click', () => {
       currentFilter = btn.dataset.category;
-
-      filterBtns.forEach(b => {
-        b.classList.remove('bg-gray-900', 'text-white');
-        b.classList.add('bg-gray-100', 'text-gray-600');
-      });
-      btn.classList.remove('bg-gray-100', 'text-gray-600');
-      btn.classList.add('bg-gray-900', 'text-white');
-
+      setToggleState(filterBtns, btn);
       updatePosts();
     });
   });
 
-  // Sort click handlers
   sortBtns.forEach(btn => {
+    btn.setAttribute('aria-pressed', btn.dataset.sort === 'newest' ? 'true' : 'false');
     btn.addEventListener('click', () => {
       currentSort = btn.dataset.sort;
-
-      sortBtns.forEach(b => {
-        b.classList.remove('bg-gray-900', 'text-white');
-        b.classList.add('bg-gray-100', 'text-gray-600');
-      });
-      btn.classList.remove('bg-gray-100', 'text-gray-600');
-      btn.classList.add('bg-gray-900', 'text-white');
-
+      setToggleState(sortBtns, btn);
       updatePosts();
     });
   });

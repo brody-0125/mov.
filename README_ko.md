@@ -236,6 +236,18 @@ npm run build
 
 결과물은 `public/` 디렉토리에 생성됩니다.
 
+## 접근성 (WCAG 2.2)
+
+테마는 WCAG 2.2 Level AA를 목표로 합니다. 로드맵과 검증 방법은 `docs/accessibility/`를 참고하세요.
+
+```bash
+npm run css:build
+npm run a11y
+```
+
+- [작성자 가이드](docs/accessibility/AUTHOR-GUIDE.md)
+- [테스트 매트릭스](docs/accessibility/TEST-MATRIX.md)
+
 ## 라이선스
 
 MIT 라이선스

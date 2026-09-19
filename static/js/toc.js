@@ -1,83 +1,101 @@
 // Table of Contents scroll tracking
 document.addEventListener('DOMContentLoaded', function() {
-  const tocNav = document.getElementById('toc-nav');
-  if (!tocNav) return;
+  const tocNavs = [
+    document.getElementById('toc-nav'),
+    document.getElementById('toc-nav-mobile')
+  ].filter(Boolean);
 
-  const tocLinks = tocNav.querySelectorAll('a');
-  if (!tocLinks.length) return;
+  if (!tocNavs.length) return;
 
-  // Get all headings that match TOC links
+  const prefersReducedMotion = window.siteA11y?.prefersReducedMotion() ?? false;
+  const primaryLinks = tocNavs[0].querySelectorAll('a');
   const headings = [];
-  tocLinks.forEach(link => {
+
+  primaryLinks.forEach(link => {
     const href = link.getAttribute('href');
-    if (href && href.startsWith('#')) {
-      const heading = document.getElementById(href.slice(1));
-      if (heading) {
-        headings.push({ element: heading, link: link });
-      }
+    if (!href || !href.startsWith('#')) return;
+    const heading = document.getElementById(href.slice(1));
+    if (heading) {
+      headings.push({ element: heading, href });
     }
   });
 
   if (!headings.length) return;
 
-  // Track active heading
+  const linksByHref = new Map();
+  tocNavs.forEach(nav => {
+    nav.querySelectorAll('a').forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+      if (!linksByHref.has(href)) linksByHref.set(href, []);
+      linksByHref.get(href).push(link);
+    });
+  });
+
+  let activeHref = '';
+
+  function setActiveHref(href) {
+    if (href === activeHref) return;
+    activeHref = href;
+    linksByHref.forEach((links, linkHref) => {
+      links.forEach(link => {
+        const isActive = linkHref === href;
+        link.classList.toggle('active', isActive);
+        if (isActive) {
+          link.setAttribute('aria-current', 'location');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    });
+  }
+
   function updateActiveHeading() {
-    const scrollPosition = window.scrollY + 100; // Offset for header
+    const scrollPosition = window.scrollY + 100;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
     const isAtBottom = (window.scrollY + windowHeight) >= (documentHeight - 50);
 
-    let activeHeading = headings[0];
+    let active = headings[0];
 
-    // If at bottom of page, highlight last heading
-    if (isAtBottom && headings.length > 0) {
-      activeHeading = headings[headings.length - 1];
+    if (isAtBottom) {
+      active = headings[headings.length - 1];
     } else {
-      for (const heading of headings) {
-        if (heading.element.offsetTop <= scrollPosition) {
-          activeHeading = heading;
+      for (const entry of headings) {
+        if (entry.element.offsetTop <= scrollPosition) {
+          active = entry;
         }
       }
     }
 
-    // Update active states
-    tocLinks.forEach(link => link.classList.remove('active'));
-    if (activeHeading) {
-      activeHeading.link.classList.add('active');
-    }
+    setActiveHref(active.href);
   }
 
-  // Throttle scroll handler
   let ticking = false;
   window.addEventListener('scroll', function() {
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        updateActiveHeading();
-        ticking = false;
-      });
-      ticking = true;
-    }
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function() {
+      updateActiveHeading();
+      ticking = false;
+    });
   }, { passive: true });
 
-  // Smooth scroll for TOC links
-  tocLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href && href.startsWith('#')) {
+  linksByHref.forEach(links => {
+    links.forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
         e.preventDefault();
         const target = document.getElementById(href.slice(1));
-        if (target) {
-          const offset = 80; // Header height
-          const targetPosition = target.offsetTop - offset;
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
-        }
-      }
+        if (!target) return;
+        window.scrollTo({
+          top: target.offsetTop - 80,
+          behavior: prefersReducedMotion ? 'auto' : 'smooth'
+        });
+      });
     });
   });
 
-  // Initial update
   updateActiveHeading();
 });

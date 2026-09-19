@@ -1,9 +1,9 @@
 {{- $id := .Get "id" | default (printf "comment-%d" (now.UnixNano)) -}}
 <span class="inline-comment-wrapper relative">
-  <span class="inline-comment-text bg-orange-50 border-b-2 border-dashed border-orange-300 cursor-pointer hover:bg-orange-100 transition-colors" data-comment-id="{{ $id }}">{{ .Inner | markdownify }}</span>
-  <span class="inline-comment-tooltip hidden absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-sm rounded-lg shadow-xl z-50 before:content-[''] before:absolute before:top-full before:left-4 before:border-8 before:border-transparent before:border-t-gray-900">
+  <button type="button" class="inline-comment-trigger inline-comment-text bg-orange-50 border-b-2 border-dashed border-orange-300 cursor-pointer hover:bg-orange-100 transition-colors text-left focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 rounded-sm" data-comment-id="{{ $id }}" aria-expanded="false" aria-controls="{{ $id }}-tooltip">{{ .Inner | plainify }}</button>
+  <span id="{{ $id }}-tooltip" class="inline-comment-tooltip hidden absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-sm rounded-lg shadow-xl z-50 before:content-[''] before:absolute before:top-full before:left-4 before:border-8 before:border-transparent before:border-t-gray-900" role="tooltip">
     <span class="flex items-center gap-2 mb-1 text-orange-300 font-medium text-xs uppercase tracking-wide">
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
       Comment
     </span>
     {{ .Get "note" }}

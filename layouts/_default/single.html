@@ -11,7 +11,7 @@
   <div class="max-w-3xl mx-auto px-4 md:px-6 mb-12 text-center">
     <a
       href="/posts/"
-      class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-8"
+      class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-black transition-colors mb-8 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 rounded-sm"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="m12 19-7-7 7-7"></path>
@@ -74,6 +74,14 @@
   <div class="max-w-7xl mx-auto px-4 md:px-6 flex gap-12 justify-center">
     <!-- Main Content -->
     <div class="max-w-2xl w-full">
+      {{ if .TableOfContents }}
+      <details class="xl:hidden mb-8 border border-gray-100 rounded-lg p-4">
+        <summary class="text-sm font-semibold text-gray-900 cursor-pointer focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 rounded-sm">On this page</summary>
+        <nav id="toc-nav-mobile" class="toc mt-4" aria-label="Table of contents">
+          {{ .TableOfContents }}
+        </nav>
+      </details>
+      {{ end }}
       <div class="prose prose-lg prose-gray prose-headings:font-serif prose-headings:font-medium prose-a:text-black prose-a:no-underline prose-a:border-b prose-a:border-gray-300 hover:prose-a:border-black prose-img:rounded-xl">
         {{ .Content }}
       </div>
@@ -99,8 +107,8 @@
     <!-- TOC Sidebar -->
     {{ if .TableOfContents }}
     <div class="hidden xl:block w-64 shrink-0 self-start sticky top-24">
-      <h4 class="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">On this page</h4>
-      <nav id="toc-nav" class="toc">
+      <h2 class="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">On this page</h2>
+      <nav id="toc-nav" class="toc" aria-label="Table of contents">
         {{ .TableOfContents }}
       </nav>
     </div>
