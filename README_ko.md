@@ -245,7 +245,6 @@ npm run css:build
 npm run a11y
 ```
 
-- [WCAG 2.2 로드맵](docs/accessibility/WCAG-2.2-ROADMAP.md)
 - [작성자 가이드](docs/accessibility/AUTHOR-GUIDE.md)
 - [테스트 매트릭스](docs/accessibility/TEST-MATRIX.md)
 

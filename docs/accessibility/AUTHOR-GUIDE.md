@@ -31,4 +31,4 @@ Content authors share responsibility for WCAG conformance on published posts.
 
 - Site default language is configured in `hugo.toml` (`languageCode`). Match post language to audience; mixed-language posts should use the clearest language for each section.
 
-See [WCAG-2.2-ROADMAP.md](./WCAG-2.2-ROADMAP.md) for theme-level work.
+For automated checks, run `npm run a11y` after building the site (see [TEST-MATRIX.md](./TEST-MATRIX.md)).
